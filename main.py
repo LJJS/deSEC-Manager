@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from PyQt5 import uic, QtCore
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QTableWidget, QTableWidgetItem, QLineEdit, QHeaderView
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QTableWidget, QTableWidgetItem, QLineEdit, QHeaderView, QFileDialog
 from PyQt5.QtCore import Qt
 import json
 import urllib.request
@@ -19,7 +19,7 @@ class Ui(QMainWindow):
         self.txt_token.setEchoMode(QLineEdit.Password)
         self.btn_list_dom.pressed.connect(self.fn_load_all_registerd_domains)
         self.btn_login.pressed.connect(self.fn_login)
-        self.btn_save.pressed.connect(self.save_table_into_json)
+        self.btn_save.pressed.connect(self.write_table_to_file)
         self.btn_toggle_token.pressed.connect(self.fn_toggle_token)
         self.btn_comp.pressed.connect(self.fn_user_compare)
         self.btn_upload.pressed.connect(self.upload)
@@ -31,6 +31,7 @@ class Ui(QMainWindow):
         self.domains = []
         self.all_rrsets = []
         self.tbl_rrsets = [[],[],[],[],[]]
+        self.json_file = []
 
     def fn_toggle_token(self):
         if self.txt_token.echoMode() == QLineEdit.Password:
@@ -183,6 +184,20 @@ class Ui(QMainWindow):
                     self.tbl_rrsets_row[keys[j]] = self.table_widget.item(i,j).text()
             self.tbl_rrsets[self.current_domain].append(self.tbl_rrsets_row)   
         self.draw_window(self.tbl_rrsets)
+
+    def write_table_to_file(self):
+        save_dialog = QFileDialog()
+        save_dialog.setAcceptMode(QFileDialog.AcceptSave)
+        file_path = save_dialog.getSaveFileName(self, 'Save as... File', './', filter='JASON Files(*.json)')
+        json_save_file = open(file_path[0], "w+")
+        for index, domain in enumerate(self.domains):
+            temp = {}
+            temp["domain"] = domain
+            temp["rrsets"] = self.tbl_rrsets[index]
+            self.json_file.append(temp)
+        json_save_file.write(json.dumps(self.json_file, indent=4, sort_keys=True))
+        json_save_file.close()
+
 
     def update_table(self):
         self.table_widget.sortItems(1,QtCore.Qt.AscendingOrder)
