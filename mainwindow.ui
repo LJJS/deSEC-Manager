@@ -440,6 +440,25 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>txt_email</tabstop>
+  <tabstop>txt_pw</tabstop>
+  <tabstop>btn_login</tabstop>
+  <tabstop>txt_token</tabstop>
+  <tabstop>btn_toggle_token</tabstop>
+  <tabstop>com_dom</tabstop>
+  <tabstop>btn_list_dom</tabstop>
+  <tabstop>txt_created</tabstop>
+  <tabstop>txt_published</tabstop>
+  <tabstop>txt_touched</tabstop>
+  <tabstop>btn_newentry</tabstop>
+  <tabstop>btn_save</tabstop>
+  <tabstop>btn_clear</tabstop>
+  <tabstop>btn_comp</tabstop>
+  <tabstop>btn_upload</tabstop>
+  <tabstop>table_widget</tabstop>
+  <tabstop>txt_log</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
