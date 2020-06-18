@@ -25,6 +25,7 @@ class Ui(QMainWindow):
         self.btn_upload.pressed.connect(self.upload)
         self.btn_clear.pressed.connect(self.fn_clear_log)
         self.btn_newentry.pressed.connect(self.fn_newentry)
+        self.btn_load.pressed.connect(self.load_json_into_table)
         self.com_dom.currentIndexChanged.connect(self.fn_change_domain)
         self.token = ""
         self.current_domain = 0
@@ -197,7 +198,17 @@ class Ui(QMainWindow):
             self.json_file.append(temp)
         json_save_file.write(json.dumps(self.json_file, indent=4, sort_keys=True))
         json_save_file.close()
+        self.txt_log.appendPlainText("Aved successfully")
 
+    def load_json_into_table(self):
+        file_path = QFileDialog.getOpenFileName(self, 'Open File')
+        json_save_file = open(file_path[0], "r")
+        json_save_file = json.load(json_save_file)
+        for domain in json_save_file:
+            for index_server, domain_server in enumerate(self.domains):
+                if domain_server == domain["domain"]:
+                    self.tbl_rrsets[index_server] = domain["rrsets"]
+        self.draw_window(self.tbl_rrsets)
 
     def update_table(self):
         self.table_widget.sortItems(1,QtCore.Qt.AscendingOrder)
