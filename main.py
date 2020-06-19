@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from PyQt5 import uic, QtCore
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QTableWidget, QTableWidgetItem, QLineEdit, QHeaderView, QFileDialog
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QTableWidget, QTableWidgetItem, QLineEdit, QHeaderView, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
 import json
 import urllib.request
@@ -33,6 +33,18 @@ class Ui(QMainWindow):
         self.all_rrsets = []
         self.tbl_rrsets = [[],[],[],[],[]]
         self.json_file = []
+
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, 'Message',
+            "Are you sure to quit an logout?", QMessageBox.Yes, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            response = self.url_cmd("https://desec.io/api/v1/auth/logout/", self.header, 0, 'POST')
+            if response == 1:
+                return 1
+            event.accept()
+        else:
+            event.ignore()
 
     def fn_toggle_token(self):
         if self.txt_token.echoMode() == QLineEdit.Password:
@@ -155,6 +167,7 @@ class Ui(QMainWindow):
             self.txt_log.appendPlainText("HTTP status code: " + str(e.code))
             self.txt_log.appendPlainText(str(e.read().decode()))
             #self.txt_log.appendPlainText( str( json.loads( e.read() )["detail"] ) )
+            #print(json.loads( e.read() )["detail"])
             return 1
         self.txt_log.appendPlainText("HTTP status code: " + str(response.code))
         return response
